@@ -1,4 +1,5 @@
 from Grid import Grid
+import random
 
 class GameOfLife:
 
@@ -48,6 +49,12 @@ class GameOfLife:
                 else:
                     new_grid[column][row] = self.grid[column][row]
         self.grid = new_grid
+
+    def random_grid_init(self):
+        for column in range(self.grid.getWidth()):
+            for row in range(self.grid.getHeight()):
+                rand_state = random.choice([GameOfLife.ALIVE, GameOfLife.DEAD])
+                self.grid[column][row] = rand_state
 
 if __name__ == "__main__":
     g = GameOfLife(15, 15)
