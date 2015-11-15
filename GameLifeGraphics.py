@@ -6,13 +6,13 @@ from colors import *
 from music import LifeAudio
 
 resolution = (1000, 1000)
-board_size = 30
+board_size = 50
 gaps = 1
-time_per_col = .20
+time_per_col = .1
 
 # Global initialization
 pygame.init()
-pygame.display.set_caption("Game of Life")
+pygame.display.set_caption("The Music of Life")
 DISPLAYSURF = pygame.display.set_mode(resolution, RESIZABLE)
 
 the_grid = SquareGridUI(DISPLAYSURF, board_size, resolution[0], gaps)
@@ -33,6 +33,15 @@ def toggle_pause():
     global paused
     paused = not paused
 
+def increase_speed():
+    global time_per_col
+    if time_per_col > .05:
+        time_per_col -= .025
+
+def decrease_speed():
+    global time_per_col
+    time_per_col += .025
+
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -41,6 +50,10 @@ while True:
         if event.type == KEYDOWN:
             if event.key == K_SPACE:
                 toggle_pause()
+            elif event.key == K_UP:
+                increase_speed()
+            elif event.key == K_DOWN:
+                decrease_speed()
     if not paused:
         DISPLAYSURF.fill(BLUE_GREY)
         the_grid.draw_grid((0,0), the_game.grid, BLUE_GREY, MAT_ORANGE)

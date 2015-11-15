@@ -122,7 +122,7 @@ class LifeAudio:
     self.stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
 
     if scale is None:
-      root = Note('A', 2)
+      root = Note('C', 1)
       self.scale = Scale(root, [2, 2, 3, 2, 3])
 
   def play_notes(self, notes, time_seconds=1):
@@ -130,7 +130,6 @@ class LifeAudio:
       chunks = []
       pluck_sum = 0
       for note in notes:
-        # note = note % 15
         pluck_sum += pluck1(self.scale.get(note), time_seconds) + pluck2(self.scale.get(note), time_seconds)
       chunks.append(pluck_sum)
       chunk = numpy.concatenate(chunks) * 0.25
