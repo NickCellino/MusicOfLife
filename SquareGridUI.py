@@ -23,5 +23,6 @@ class SquareGridUI:
                     self.draw_square(self.surface, current_location, square_size, WHITE)
                 else:
                     self.draw_square(self.surface, current_location, square_size, RED)
-                current_location = (current_location[0] + square_size + self.gap_size, current_location[1])
-            current_location = (location[0] + self.gap_size, current_location[1] + square_size + self.gap_size)
+                current_location = (current_location[0], current_location[1] + square_size + self.gap_size)
+            current_location = (current_location[0] + square_size + self.gap_size, location[1] + self.gap_size)
+

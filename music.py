@@ -129,6 +129,7 @@ class LifeAudio:
     chunks = []
     pluck_sum = 0
     for note in notes:
+      note = note % 15
       pluck_sum += pluck1(self.scale.get(note), time_seconds) + pluck2(self.scale.get(note), time_seconds)
     chunks.append(pluck_sum)
     chunk = numpy.concatenate(chunks) * 0.25
