@@ -56,6 +56,17 @@ class GameOfLife:
                 rand_state = random.choice([GameOfLife.ALIVE, GameOfLife.DEAD])
                 self.grid[column][row] = rand_state
 
+    def insert_pulsar(self, location):
+        points = []
+        for col in [2, 7, 9, 14]:
+            for row in [4, 5, 6, 10, 11, 12]:
+                points.append((col, row))
+        for row in [2, 7, 9, 14]:
+            for col in [4, 5, 6, 10, 11, 12]:
+                points.append((col, row))
+        for point in points:
+            self.grid[point[0]][point[1]] = GameOfLife.ALIVE
+
 if __name__ == "__main__":
     g = GameOfLife(15, 15)
     g.grid[1][1] = GameOfLife.ALIVE

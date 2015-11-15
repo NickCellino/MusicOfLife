@@ -126,14 +126,15 @@ class LifeAudio:
       self.scale = Scale(root, [2, 2, 3, 2, 3])
 
   def play_notes(self, notes, time_seconds=1):
-    chunks = []
-    pluck_sum = 0
-    for note in notes:
-      note = note % 15
-      pluck_sum += pluck1(self.scale.get(note), time_seconds) + pluck2(self.scale.get(note), time_seconds)
-    chunks.append(pluck_sum)
-    chunk = numpy.concatenate(chunks) * 0.25
-    self.stream.write(chunk.astype(numpy.float32).tostring())
+    if len(notes) != 0:
+      chunks = []
+      pluck_sum = 0
+      for note in notes:
+        note = note % 7
+        pluck_sum += pluck1(self.scale.get(note), time_seconds) + pluck2(self.scale.get(note), time_seconds)
+      chunks.append(pluck_sum)
+      chunk = numpy.concatenate(chunks) * 0.25
+      self.stream.write(chunk.astype(numpy.float32).tostring())
 
   def destroy(self):
     self.stream.close()
