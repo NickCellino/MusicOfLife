@@ -12,10 +12,16 @@ class SquareGridUI:
         self.gap_size = gap_size
         self.square_size = ((self.size - self.gap_size)/self.num_rows_cols) -self.gap_size 
 
+        # Correct for rounding errors
+        actual_size = (num_rows_cols * self.square_size) + (num_rows_cols+1)*(self.gap_size)
+        size_difference = self.size - actual_size
+        self.offset = size_difference / 2
+
     def draw_square(self, surface, location, size, color):
         pygame.draw.rect(surface, color, (location[0], location[1], size, size))
 
     def draw_grid(self, location, grid, background_color, alive_color):
+        location = (location[0] + self.offset, location[1] + self.offset)
         current_location = (location[0] + self.gap_size, location[1] + self.gap_size)
         for i in range(0, self.num_rows_cols):
             for j in range(0, self.num_rows_cols):
@@ -27,8 +33,8 @@ class SquareGridUI:
             current_location = (current_location[0] + self.square_size + self.gap_size, location[1] + self.gap_size)
 
     def color_square(self, column, row, color):
-        x_location = (column + 1) * self.gap_size + column * self.square_size
-        y_location = (row + 1) * self.gap_size + row * self.square_size
+        x_location = self.offset + (column + 1) * self.gap_size + column * self.square_size
+        y_location = self.offset + (row + 1) * self.gap_size + row * self.square_size
         location = (x_location, y_location)
         self.draw_square(self.surface, location, self.square_size, color)
 

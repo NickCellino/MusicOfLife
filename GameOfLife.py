@@ -60,12 +60,15 @@ class GameOfLife:
         points = []
         for col in [2, 7, 9, 14]:
             for row in [4, 5, 6, 10, 11, 12]:
-                points.append((col, row))
+                points.append((col + location[0], row + location[1]))
         for row in [2, 7, 9, 14]:
             for col in [4, 5, 6, 10, 11, 12]:
-                points.append((col, row))
+                points.append((col + location[0], row + location[1]))
         for point in points:
-            self.grid[point[0]][point[1]] = GameOfLife.ALIVE
+            try:
+                self.grid[point[0]][point[1]] = GameOfLife.ALIVE
+            except IndexError:
+                pass
 
 if __name__ == "__main__":
     g = GameOfLife(15, 15)
