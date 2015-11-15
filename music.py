@@ -122,7 +122,7 @@ class LifeAudio:
     self.stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
 
     if scale is None:
-      root = Note('A', 2)
+      root = Note('C', 1)
       self.scale = Scale(root, [2, 2, 3, 2, 3])
 
   def play_notes(self, notes, time_seconds=1):

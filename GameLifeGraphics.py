@@ -6,9 +6,9 @@ from colors import *
 from music import LifeAudio
 
 resolution = (800, 800)
-board_size = 35
+board_size = 30
 gaps = 1
-time_per_col = .15
+time_per_col = .25
 
 # Global initialization
 pygame.init()
@@ -20,9 +20,13 @@ the_game = GameOfLife(board_size, board_size)
 the_game.random_grid_init()
 # the_game.insert_pulsar((1, 1))
 # the_game.insert_pulsar((17, 17))
+# the_game.insert_glider((5, 5))
 
 audio = LifeAudio()
 current_column = 0
+column_dir = 1
+current_row = 0
+row_dir = 1
 
 while True:
     for event in pygame.event.get():
@@ -39,7 +43,10 @@ while True:
             the_grid.color_square(current_column, row, MAT_AMBER)
         else:
             the_grid.color_square(current_column, row, BLUE_GREY_HIGH)
-    current_column = (current_column + 1) % the_game.grid.getWidth()
+    current_column += column_dir 
+    if current_column < 0 or current_column == the_game.grid.getWidth():
+        column_dir *= -1
+        current_column += 2*column_dir
 
     pygame.display.update()
     if len(alive_rows) != 0:

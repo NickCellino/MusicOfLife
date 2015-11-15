@@ -11,7 +11,6 @@ class GameOfLife:
 
     def get_num_live_neighbors(self, column, row):
         num_live_neighbors = 0
-        test_col = column - 1
         for neighbor_location in self.get_neighbor_locations(column, row):
             try:
                 if self.grid[neighbor_location[0]][neighbor_location[1]] == GameOfLife.ALIVE:
@@ -67,6 +66,20 @@ class GameOfLife:
         for point in points:
             try:
                 self.grid[point[0]][point[1]] = GameOfLife.ALIVE
+            except IndexError:
+                pass
+
+    def insert_glider(self, location):
+        alive_points = [(1,0), (2,1), (0,2), (1,2), (2,2)]
+        for col in range(3):
+            for row in range(3):
+                try:
+                    self.grid[col + location[0]][row + location[1]] = GameOfLife.DEAD
+                except IndexError:
+                    pass
+        for alive_point in alive_points:
+            try:
+                self.grid[alive_point[0] + location[0]][alive_point[1] + location[1]] = GameOfLife.ALIVE
             except IndexError:
                 pass
 
