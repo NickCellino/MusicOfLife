@@ -38,4 +38,9 @@ class SquareGridUI:
         location = (x_location, y_location)
         self.draw_square(self.surface, location, self.square_size, color)
 
+    def get_square_location(self, position):
+        x_location = (position[0] - self.offset) / (self.gap_size + self.square_size)
+        y_location = (position[1] - self.offset) / (self.gap_size + self.square_size)
+        return (x_location, y_location)
+
 

@@ -7,7 +7,12 @@ class GameOfLife:
     ALIVE = 1
 
     def __init__(self, num_columns, num_rows):
-        self.grid = Grid(num_rows, num_columns, GameOfLife.DEAD)
+        self.num_columns = num_columns
+        self.num_rows = num_rows
+        self.reset_grid()
+
+    def reset_grid(self):
+        self.grid = Grid(self.num_rows, self.num_columns, GameOfLife.DEAD)
 
     def get_num_live_neighbors(self, column, row):
         num_live_neighbors = 0

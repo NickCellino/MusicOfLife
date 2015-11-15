@@ -131,6 +131,11 @@ class LifeAudio:
       pluck_sum = 0
       for note in notes:
         pluck_sum += pluck1(self.scale.get(note), time_seconds) + pluck2(self.scale.get(note), time_seconds)
+        if note < 10:
+          pluck_sum += 2*pluck1(self.scale.get(note), time_seconds) + 2*pluck2(self.scale.get(note), time_seconds)
+          if note < 5:
+            pluck_sum += 4*pluck1(self.scale.get(note), time_seconds) + 4*pluck2(self.scale.get(note), time_seconds)
+      pluck_sum *= 3
       chunks.append(pluck_sum)
       chunk = numpy.concatenate(chunks) * 0.25
       self.stream.write(chunk.astype(numpy.float32).tostring())
