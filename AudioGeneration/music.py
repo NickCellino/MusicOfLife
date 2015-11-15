@@ -87,46 +87,62 @@ def harmonics2(freq, length):
   b = sine(freq * 2.00, length, 44100) * 0.5
   return (a + b) * 0.2
 
-def pluck1(note, time_seconds = 0.5):
+def pluck1(note, time_seconds=0.5):
   chunk = harmonics1(note.frequency(), time_seconds)
   return shape(chunk, {0.0: 0.0, 0.005: 1.0, 0.25: 0.5, 0.9: 0.1, 1.0:0.0})
 
-def pluck2(note, time_seconds = 0.5):
+def pluck2(note, time_seconds=0.5):
   chunk = harmonics2(note.frequency(), time_seconds)
   return shape(chunk, {0.0: 0.0, 0.5:0.75, 0.8:0.4, 1.0:0.1})
 
-def chord(n, scale):
+def chord(n, scale, time_seconds=0.5):
   root = scale.get(n)
   third = scale.transpose(root, 2)
   fifth = scale.transpose(root, 4)
-  return pluck1(root) + pluck1(third) + pluck1(fifth)
+  return pluck1(root, time_seconds) + pluck1(third, time_seconds) + pluck1(fifth, time_seconds)
 
-root = Note('A', 0)
-scale = Scale(root, [2, 2, 3, 2, 3])
+def play_notes(notes, scale, time_seconds):
+  chunks = []
+  pluck_sum = 0
+  for note in notes:
+    pluck_sum += pluck1(scale.get(note), time_seconds) + pluck2(scale.get(note), time_seconds)
+  chunks.append(pluck_sum)
 
-chunks = []
-chunks.append(chord(18, scale))
-# chunks.append(chord(19, scale))
-# chunks.append(chord(18, scale))
-# chunks.append(chord(20, scale))
-# chunks.append(chord(21, scale))
-# chunks.append(chord(22, scale))
-# chunks.append(chord(20, scale))
-# chunks.append(chord(21, scale))
+  chunk = numpy.concatenate(chunks) * 0.25
+  p = pyaudio.PyAudio()
+  stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
+  stream.write(chunk.astype(numpy.float32).tostring())
+  stream.close()
+  p.terminate()
 
-# chunks.append(chord(21, scale) + pluck2(scale.get(38)))
-# chunks.append(chord(19, scale) + pluck2(scale.get(37)))
-# chunks.append(chord(18, scale) + pluck2(scale.get(33)))
-# chunks.append(chord(20, scale) + pluck2(scale.get(32)))
-# chunks.append(chord(21, scale) + pluck2(scale.get(31)))
-# chunks.append(chord(22, scale) + pluck2(scale.get(32)))
-# chunks.append(chord(20, scale) + pluck2(scale.get(29)))
-# chunks.append(chord(21, scale) + pluck2(scale.get(28)))
+class LifeAudio:
 
-chunk = numpy.concatenate(chunks) * 0.25
+  def __init__(self, scale=None):
+    p = pyaudio.PyAudio()
+    self.stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
 
-p = pyaudio.PyAudio()
-stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
-stream.write(chunk.astype(numpy.float32).tostring())
-stream.close()
-p.terminate()
+    if scale is None:
+      root = Note('A', 4)
+      self.scale = Scale(root, [2, 2, 3, 2, 3])
+
+  def play_notes(self, notes, time_seconds=1):
+    chunks = []
+    pluck_sum = 0
+    for note in notes:
+      pluck_sum += pluck1(self.scale.get(note), time_seconds) + pluck2(self.scale.get(note), time_seconds)
+    chunks.append(pluck_sum)
+    chunk = numpy.concatenate(chunks) * 0.25
+    self.stream.write(chunk.astype(numpy.float32).tostring())
+
+  def destroy(self):
+    self.stream.close()
+    p.terminate()
+
+  def set_scale(self, scale):
+    self.scale = scale
+
+if __name__ == "__main__":
+  audio = LifeAudio()
+  audio.play_notes([1, 3, 5])
+  audio.play_notes([1, 2, 4])
+  audio.play_notes([1, 2, 3, 4, 5])
