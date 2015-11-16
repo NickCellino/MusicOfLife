@@ -5,16 +5,21 @@ from SquareGridUI import SquareGridUI
 from colors import *
 from music import LifeAudio
 
-resolution = (1000, 1000)
-board_size = 30
+# Program parameters
+resolution = (800, 800)
+board_size = 20
 gaps = 1
-time_per_col = .5
+time_per_col = .25
+LIVING_CELL_COLORS = MAT_ORANGE
+MUSIC_NOTE_COLOR = MAT_AMBER
+DEAD_CELL_COLORS = BLUE_GREY
+GRID_COLOR = BLUE_GREY
+HIGHLIGHT_COLOR = BLUE_GREY_HIGH
 
 # Global initialization
 pygame.init()
 pygame.display.set_caption("The Music of Life")
 DISPLAYSURF = pygame.display.set_mode(resolution, RESIZABLE)
-
 the_grid = SquareGridUI(DISPLAYSURF, board_size, resolution[0], gaps)
 the_game = GameOfLife(board_size, board_size)
 the_game.random_grid_init()
@@ -39,18 +44,20 @@ def decrease_speed():
     global time_per_col
     time_per_col += .025
 
+# Checks if a given pixel position is on the game window
 def is_on_grid(position):
     if position[0] > 0 and position[0] < resolution[0]:
         if position[1] > 0 and position[1] < resolution[1]:
             return True
     return False
 
+# Highlights the current mouse position
 def highlight_current_mouse_position():
     global the_grid
     mouse_position = pygame.mouse.get_pos()
     if is_on_grid(mouse_position):
         square_location = the_grid.get_square_location(mouse_position)
-        the_grid.color_square(square_location[0], square_location[1], BLUE_GREY_HIGH)
+        the_grid.color_square(square_location[0], square_location[1], HIGHLIGHT_COLOR)
 
 while True:
     for event in pygame.event.get():
@@ -90,15 +97,15 @@ while True:
                         the_game.grid[square_location[0]][square_location[1]] = GameOfLife.ALIVE
     if not paused:
         DISPLAYSURF.fill(BLUE_GREY)
-        the_grid.draw_grid((0,0), the_game.grid, BLUE_GREY, MAT_ORANGE)
+        the_grid.draw_grid((0,0), the_game.grid, GRID_COLOR, LIVING_CELL_COLORS)
 
         alive_rows = []
         for row in range(the_game.grid.getHeight()):
             if the_game.grid[current_column][row] == GameOfLife.ALIVE:
                 alive_rows.append(row)
-                the_grid.color_square(current_column, row, MAT_AMBER)
+                the_grid.color_square(current_column, row, MUSIC_NOTE_COLOR)
             else:
-                the_grid.color_square(current_column, row, BLUE_GREY_HIGH)
+                the_grid.color_square(current_column, row, HIGHLIGHT_COLOR)
         current_column += column_dir 
         if current_column < 0 or current_column == the_game.grid.getWidth():
             column_dir *= -1
@@ -111,6 +118,6 @@ while True:
             pygame.time.wait(int(time_per_col*1000))
         the_game.time_step()
     if paused:
-        the_grid.draw_grid((0,0), the_game.grid, BLUE_GREY, MAT_ORANGE)
+        the_grid.draw_grid((0,0), the_game.grid, GRID_COLOR, LIVING_CELL_COLORS)
         highlight_current_mouse_position()
         pygame.display.update()
