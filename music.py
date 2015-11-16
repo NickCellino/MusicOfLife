@@ -1,3 +1,6 @@
+"""
+This code is from http://davywybiral.blogspot.com.br/2010/09/procedural-music-with-pyaudio-and-numpy.html
+"""
 import math
 import numpy
 import pyaudio
